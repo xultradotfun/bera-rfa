@@ -54,14 +54,18 @@ function ProjectRow({ project, beraPrice, overallRank }: ProjectRowProps) {
         {project.beraAmount === 0 ? (
           <span className="text-[hsl(var(--muted-foreground))]">Unknown</span>
         ) : (
-          <span className="text-[hsl(var(--foreground))]">{formatBera(project.beraAmount, 2)}</span>
+          <span className="text-[hsl(var(--foreground))]">
+            {formatBera(project.beraAmount, 2)}
+          </span>
         )}
       </td>
       <td className="py-4 px-4 text-right font-mono">
         {project.beraAmount === 0 ? (
           <span className="text-[hsl(var(--muted-foreground))]">Unknown</span>
         ) : (
-          <span className="text-[hsl(var(--foreground))]">${formatBera(dollarValue, 2)}</span>
+          <span className="text-[hsl(var(--foreground))]">
+            ${formatBera(dollarValue, 2)}
+          </span>
         )}
       </td>
     </tr>
@@ -141,27 +145,45 @@ export function ProjectTable({ projects }: ProjectTableProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="text-center space-y-2">
-        <div className="text-yellow-500">
-          Current BERA Price:{" "}
-          <span className="font-mono">${formatBera(beraPrice, 2)}</span>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--muted))] rounded-lg">
+        <div className="flex items-center gap-2 text-[hsl(var(--muted-foreground))] text-sm">
+          <svg
+            className="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 16v-4m0-4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>&ldquo;Unknown&rdquo; = unconfirmed allocation</span>
         </div>
-        <div className="text-yellow-500/70 text-sm">
-          Note: &ldquo;Unknown&rdquo; means the allocation amount is not yet
-          confirmed
+        <div className="flex items-center gap-2">
+          <span className="text-[hsl(var(--muted-foreground))] text-sm">
+            BERA Price:
+          </span>
+          <span className="font-mono font-medium text-[hsl(var(--primary))]">
+            ${formatBera(beraPrice, 2)}
+          </span>
         </div>
       </div>
+
       <div className="relative">
         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-yellow-500/50" />
+          <Search className="h-5 w-5 text-[hsl(var(--muted-foreground))]" />
         </div>
         <input
           type="text"
           placeholder="Search projects..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-yellow-950/10 border border-yellow-900/20 rounded-lg text-yellow-500 placeholder-yellow-500/50 focus:outline-none focus:ring-2 focus:ring-yellow-500/20"
+          className="w-full pl-10 pr-4 py-3 bg-[hsl(var(--muted))] border border-[hsl(var(--primary))] rounded-lg text-[hsl(var(--foreground))] placeholder-[hsl(var(--muted-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:ring-offset-2 focus:ring-offset-[hsl(var(--background))] transition-all"
         />
       </div>
       <div className="overflow-x-auto rounded-lg border border-yellow-900/20 bg-yellow-950/10">
