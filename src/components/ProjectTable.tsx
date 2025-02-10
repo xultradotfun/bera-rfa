@@ -11,15 +11,9 @@ interface ProjectRowProps {
   project: Project;
   beraPrice: number;
   rank: number;
-  totalProjects: number;
 }
 
-function ProjectRow({
-  project,
-  beraPrice,
-  rank,
-  totalProjects,
-}: ProjectRowProps) {
+function ProjectRow({ project, beraPrice, rank }: ProjectRowProps) {
   const { profileUrl } = useTwitterProfile(project.twitterHandle);
   const dollarValue = project.beraAmount * beraPrice;
   const displayRank = project.beraAmount === 0 ? "-" : rank;
@@ -113,11 +107,6 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     return 0;
   });
 
-  // Calculate the number of projects with known allocations for ranking
-  const knownAllocationProjects = projects.filter(
-    (p) => p.beraAmount > 0
-  ).length;
-
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -135,7 +124,8 @@ export function ProjectTable({ projects }: ProjectTableProps) {
           <span className="font-mono">${formatBera(beraPrice, 2)}</span>
         </div>
         <div className="text-yellow-500/70 text-sm">
-          Note: "Unknown" means the allocation amount is not yet confirmed
+          Note: &ldquo;Unknown&rdquo; means the allocation amount is not yet
+          confirmed
         </div>
       </div>
       <div className="overflow-x-auto rounded-lg border border-yellow-900/20 bg-yellow-950/10">
@@ -172,7 +162,6 @@ export function ProjectTable({ projects }: ProjectTableProps) {
                 project={project}
                 beraPrice={beraPrice}
                 rank={index + 1}
-                totalProjects={knownAllocationProjects}
               />
             ))}
           </tbody>
