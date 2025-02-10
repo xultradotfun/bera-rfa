@@ -3,14 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: 38 92% 50%;
-  --foreground: 20 14.3% 4.1%;
+  --background: 39 100% 98%;
+  --foreground: 39 100% 6%;
+  --primary: 39 100% 50%;
+  --primary-foreground: 39 100% 98%;
+  --muted: 39 20% 92%;
+  --muted-foreground: 39 20% 40%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: 20 14.3% 4.1%;
-    --foreground: 38 92% 50%;
+    --background: 39 25% 8%;
+    --foreground: 39 25% 98%;
+    --primary: 39 95% 50%;
+    --primary-foreground: 39 25% 8%;
+    --muted: 39 25% 16%;
+    --muted-foreground: 39 25% 60%;
   }
 }
 
@@ -18,4 +26,25 @@ body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
   font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+  opacity: 0.8;
 }

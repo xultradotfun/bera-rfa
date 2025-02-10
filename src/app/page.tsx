@@ -41,16 +41,19 @@ async function getProjects(): Promise<Project[]> {
     }
 
     return records
-      .filter((record) => {
-        const amount = parseFloat(record.bera_amount);
-        return !isNaN(amount) && amount > 0;
-      })
       .map((record) => ({
         projectName: record.project_name,
-        beraAmount: parseFloat(record.bera_amount),
+        beraAmount: parseFloat(record.bera_amount) || 0,
         twitterHandle: record.project_name.replace("@", ""),
       }))
-      .sort((a: Project, b: Project) => b.beraAmount - a.beraAmount);
+      .sort((a: Project, b: Project) => {
+        if (a.beraAmount === 0 && b.beraAmount === 0) {
+          return a.projectName.localeCompare(b.projectName);
+        }
+        if (a.beraAmount === 0) return 1;
+        if (b.beraAmount === 0) return -1;
+        return b.beraAmount - a.beraAmount;
+      });
   } catch (error) {
     console.error("Error loading projects:", error);
     return [];
@@ -63,13 +66,13 @@ export default async function Home() {
   const projects = await getProjects();
 
   return (
-    <main className="min-h-screen bg-yellow-950/5 py-8">
-      <div className="container mx-auto px-4">
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-bold text-yellow-500">
+    <main className="min-h-screen bg-[hsl(var(--background))] py-12">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="mb-12 text-center space-y-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text text-transparent">
             Berachain RFA Allocations
           </h1>
-          <p className="text-yellow-500/80">
+          <p className="text-[hsl(var(--muted-foreground))] text-lg max-w-2xl mx-auto">
             Explore projects that received BERA token allocations through the
             Request for Allocation program
           </p>
@@ -77,7 +80,7 @@ export default async function Home() {
         {projects.length > 0 ? (
           <ProjectTable projects={projects} />
         ) : (
-          <div className="text-center text-yellow-500">
+          <div className="text-center text-[hsl(var(--muted-foreground))] p-12 bg-[hsl(var(--muted))] rounded-lg">
             No allocation data available at the moment.
           </div>
         )}

@@ -19,23 +19,23 @@ function ProjectRow({ project, beraPrice, overallRank }: ProjectRowProps) {
   const displayRank = project.beraAmount === 0 ? "-" : overallRank;
 
   return (
-    <tr className="border-b border-yellow-900/20 hover:bg-yellow-950/20 transition-colors">
+    <tr className="border-b border-[hsl(var(--muted))] transition-colors hover:bg-[hsl(var(--muted))]">
       <td className="py-4 px-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 text-right font-mono text-yellow-500/70">
+          <div className="w-8 text-right font-mono text-[hsl(var(--muted-foreground))]">
             {displayRank}
           </div>
-          <div className="relative h-8 w-8 overflow-hidden rounded-full bg-yellow-900/20">
+          <div className="relative h-10 w-10 overflow-hidden rounded-full bg-[hsl(var(--muted))] ring-2 ring-[hsl(var(--primary))] ring-offset-2 ring-offset-[hsl(var(--background))]">
             {profileUrl ? (
               <Image
                 src={profileUrl}
                 alt={`${project.projectName} logo`}
                 fill
                 className="object-cover"
-                sizes="32px"
+                sizes="40px"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-yellow-500 text-sm">
+              <div className="flex h-full w-full items-center justify-center text-[hsl(var(--primary))] text-sm font-medium">
                 {project.projectName.slice(1, 3).toUpperCase()}
               </div>
             )}
@@ -44,24 +44,24 @@ function ProjectRow({ project, beraPrice, overallRank }: ProjectRowProps) {
             href={`https://twitter.com/${project.twitterHandle}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline text-yellow-500"
+            className="font-medium text-[hsl(var(--foreground))] hover:text-[hsl(var(--primary))] transition-colors"
           >
             {project.projectName}
           </a>
         </div>
       </td>
-      <td className="py-4 px-4 text-right font-mono text-yellow-500">
+      <td className="py-4 px-4 text-right font-mono">
         {project.beraAmount === 0 ? (
-          <span className="text-yellow-500/50">Unknown</span>
+          <span className="text-[hsl(var(--muted-foreground))]">Unknown</span>
         ) : (
-          formatBera(project.beraAmount, 2)
+          <span className="text-[hsl(var(--foreground))]">{formatBera(project.beraAmount, 2)}</span>
         )}
       </td>
-      <td className="py-4 px-4 text-right font-mono text-yellow-500">
+      <td className="py-4 px-4 text-right font-mono">
         {project.beraAmount === 0 ? (
-          <span className="text-yellow-500/50">Unknown</span>
+          <span className="text-[hsl(var(--muted-foreground))]">Unknown</span>
         ) : (
-          `$${formatBera(dollarValue, 2)}`
+          <span className="text-[hsl(var(--foreground))]">${formatBera(dollarValue, 2)}</span>
         )}
       </td>
     </tr>
@@ -108,7 +108,9 @@ export function ProjectTable({ projects }: ProjectTableProps) {
   }, []);
 
   const filteredProjects = projects.filter((project) =>
-    project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+    project.projectName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase().replace("@", ""))
   );
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
@@ -116,10 +118,13 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     if (sortField === "projectName") {
       return multiplier * a.projectName.localeCompare(b.projectName);
     }
-    // Put unknown allocations (0) at the end when sorting by amount
     if (sortField === "beraAmount") {
-      if (a.beraAmount === 0 && b.beraAmount === 0) return 0;
-      if (a.beraAmount === 0) return 1;
+      // For amount sorting, keep known amounts at top/bottom based on direction
+      if (a.beraAmount === 0 && b.beraAmount === 0) {
+        // If both are unknown, sort by name
+        return a.projectName.localeCompare(b.projectName);
+      }
+      if (a.beraAmount === 0) return 1; // Always put unknown at the end
       if (b.beraAmount === 0) return -1;
       return multiplier * (a.beraAmount - b.beraAmount);
     }
