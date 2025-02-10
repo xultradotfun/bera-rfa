@@ -5,10 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatBera(amount: number): string {
+export function formatBera(amount: number, decimals: number = 2): string {
   return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+    minimumFractionDigits: decimals,
   }).format(amount);
 }
 

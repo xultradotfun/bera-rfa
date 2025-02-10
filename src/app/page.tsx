@@ -5,28 +5,59 @@ import { Project, CsvRecord } from "@/types";
 import { ProjectTable } from "@/components/ProjectTable";
 
 async function getProjects(): Promise<Project[]> {
-  const csvPath = path.join(
-    process.cwd(),
-    "public",
-    "data",
-    "rfa_allocations.csv"
-  );
-  const csvData = await fs.readFile(csvPath, "utf-8");
+  try {
+    const csvPath = path.join(
+      process.cwd(),
+      "public",
+      "data",
+      "rfa_allocations.csv"
+    );
 
-  const records = parse(csvData, {
-    columns: true,
-    skip_empty_lines: true,
-  }) as CsvRecord[];
+    // Check if file exists
+    try {
+      await fs.access(csvPath);
+    } catch {
+      console.error("CSV file not found:", csvPath);
+      return [];
+    }
 
-  return records
-    .filter((record) => parseFloat(record.bera_amount) > 0)
-    .map((record) => ({
-      projectName: record.project_name,
-      beraAmount: parseFloat(record.bera_amount),
-      twitterHandle: record.project_name.replace("@", ""),
-    }))
-    .sort((a: Project, b: Project) => b.beraAmount - a.beraAmount);
+    const csvData = await fs.readFile(csvPath, "utf-8");
+
+    if (!csvData.trim()) {
+      console.error("CSV file is empty");
+      return [];
+    }
+
+    const records = parse(csvData, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+      relaxColumnCount: true,
+    }) as CsvRecord[];
+
+    if (!Array.isArray(records) || records.length === 0) {
+      console.error("No valid records found in CSV");
+      return [];
+    }
+
+    return records
+      .filter((record) => {
+        const amount = parseFloat(record.bera_amount);
+        return !isNaN(amount) && amount > 0;
+      })
+      .map((record) => ({
+        projectName: record.project_name,
+        beraAmount: parseFloat(record.bera_amount),
+        twitterHandle: record.project_name.replace("@", ""),
+      }))
+      .sort((a: Project, b: Project) => b.beraAmount - a.beraAmount);
+  } catch (error) {
+    console.error("Error loading projects:", error);
+    return [];
+  }
 }
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const projects = await getProjects();
@@ -43,7 +74,13 @@ export default async function Home() {
             Request for Allocation program
           </p>
         </div>
-        <ProjectTable projects={projects} />
+        {projects.length > 0 ? (
+          <ProjectTable projects={projects} />
+        ) : (
+          <div className="text-center text-yellow-500">
+            No allocation data available at the moment.
+          </div>
+        )}
       </div>
     </main>
   );

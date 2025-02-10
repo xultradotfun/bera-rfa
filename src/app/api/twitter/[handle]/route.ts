@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { TwitterProfile } from "@/types";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { handle: string } }
-) {
-  const handle = params.handle;
-  const imageUrl = `https://unavatar.io/twitter/${handle}`;
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const handle = url.pathname.split("/").pop() || "";
+
+  if (!handle) {
+    return NextResponse.json({ error: "Handle is required" }, { status: 400 });
+  }
 
   try {
+    const imageUrl = `https://unavatar.io/twitter/${handle}`;
     const response = await fetch(imageUrl, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
@@ -23,6 +25,7 @@ export async function GET(
 
     return NextResponse.json(profile);
   } catch (error) {
+    console.error("Error fetching Twitter profile:", error);
     return NextResponse.json(
       { error: "Failed to fetch Twitter profile" },
       { status: 500 }

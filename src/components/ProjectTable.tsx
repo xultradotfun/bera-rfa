@@ -46,10 +46,10 @@ function ProjectRow({ project, beraPrice }: ProjectRowProps) {
         </div>
       </td>
       <td className="py-4 px-4 text-right font-mono text-yellow-500">
-        {formatBera(project.beraAmount)}
+        {formatBera(project.beraAmount, 2)}
       </td>
       <td className="py-4 px-4 text-right font-mono text-yellow-500">
-        ${formatBera(dollarValue)}
+        ${formatBera(dollarValue, 2)}
       </td>
     </tr>
   );
@@ -100,7 +100,7 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     <div className="space-y-4">
       <div className="text-center text-yellow-500">
         Current BERA Price:{" "}
-        <span className="font-mono">${formatBera(beraPrice)}</span>
+        <span className="font-mono">${formatBera(beraPrice, 2)}</span>
       </div>
       <div className="overflow-x-auto rounded-lg border border-yellow-900/20 bg-yellow-950/10">
         <table className="w-full">
