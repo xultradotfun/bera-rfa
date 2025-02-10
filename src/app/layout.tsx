@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Berachain RFA Allocations",
   description:
     "Explore projects that received BERA token allocations through the RFA program",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

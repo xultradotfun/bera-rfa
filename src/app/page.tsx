@@ -45,20 +45,6 @@ export default function Home() {
     <main className="min-h-screen bg-[hsl(var(--background))] py-12">
       <div className="container mx-auto px-4 max-w-6xl flex flex-col min-h-screen">
         <div className="mb-16 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors">
-            <a
-              href="https://twitter.com/0x_ultra"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-all"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
-              <span className="font-medium">Follow @0x_ultra</span>
-            </a>
-          </div>
-
           <div className="space-y-4">
             <h1 className="text-6xl font-bold">
               <span className="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 bg-clip-text text-transparent">
@@ -74,6 +60,28 @@ export default function Home() {
             Explore projects that received BERA token allocations through the
             RFA program. ~82.5% of tokens will be used for rewards.
           </p>
+
+          <div className="flex justify-center">
+            <a
+              href="https://twitter.com/0x_ultra"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500/90 via-yellow-500/90 to-amber-500/90 text-black hover:text-black hover:scale-[1.02] shadow-lg hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-200 font-medium"
+            >
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 opacity-0 group-hover:opacity-100 blur transition-opacity" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 opacity-0 group-hover:opacity-50 transition-opacity" />
+              <svg
+                className="w-5 h-5 relative z-10 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-[-4deg]"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              <span className="relative z-10 font-semibold tracking-wide transition-transform duration-200 group-hover:scale-105">
+                @0x_ultra
+              </span>
+            </a>
+          </div>
 
           <SectionSelector
             activeSection={activeSection}
