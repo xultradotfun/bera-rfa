@@ -365,8 +365,8 @@ export function Analytics({ projects, beraPrice }: AnalyticsProps) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-6 max-h-[120px] overflow-y-auto space-y-1 pr-2">
-            {stats.pieData.slice(0, 15).map((entry, index) => (
+          <div className="mt-6 max-h-[200px] overflow-y-auto space-y-1 pr-2">
+            {stats.pieData.map((entry, index) => (
               <div
                 key={entry.name}
                 className="flex items-center justify-between text-xs hover:bg-[hsl(var(--muted-foreground))] hover:bg-opacity-5 rounded px-1.5 py-0.5"
@@ -390,11 +390,6 @@ export function Analytics({ projects, beraPrice }: AnalyticsProps) {
                 </span>
               </div>
             ))}
-            {stats.pieData.length > 15 && (
-              <div className="text-center text-xs text-[hsl(var(--muted-foreground))] pt-1 border-t border-[hsl(var(--muted-foreground))] border-opacity-20">
-                and {stats.pieData.length - 15} more projects...
-              </div>
-            )}
           </div>
         </div>
 
