@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "Explore projects that received BERA token allocations through the RFA program",
   icons: {
-    icon: [{ url: "/favicon.ico", sizes: "any" }],
+    icon: "/favicon.png",
   },
 };
 
@@ -21,6 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+      </head>
       <body className={inter.className}>
         <ClientLayout>{children}</ClientLayout>
       </body>
