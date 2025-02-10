@@ -61,6 +61,33 @@ export default function Home() {
             RFA program. ~82.5% of tokens will be used for rewards.
           </p>
 
+          <div className="flex flex-col items-center gap-4">
+            <a
+              href="https://berakit.xultra.fun"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 hover:from-amber-500/20 hover:to-yellow-500/20 text-[hsl(var(--foreground))] transition-all duration-200"
+            >
+              <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 blur transition-opacity" />
+              <span className="relative z-10 font-medium">
+                New to Berachain? Get started with BeraKit 🐻
+              </span>
+              <svg
+                className="w-4 h-4 relative z-10 transition-transform duration-200 group-hover:translate-x-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </a>
+          </div>
+
           <div className="flex justify-center">
             <a
               href="https://twitter.com/0x_ultra"

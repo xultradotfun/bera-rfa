@@ -153,29 +153,13 @@ export function ProjectTable({ projects }: ProjectTableProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--muted))] rounded-lg">
-        <div className="flex items-center gap-2 text-[hsl(var(--muted-foreground))] text-sm">
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 16v-4m0-4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>&ldquo;Unknown&rdquo; = unconfirmed allocation</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[hsl(var(--muted-foreground))] text-sm">
-            BERA Price:
-          </span>
-          <span className="font-mono font-medium text-[hsl(var(--primary))]">
+      <div className="flex items-center justify-between px-4 py-2 bg-yellow-950/20 rounded-lg text-sm border border-yellow-900/20">
+        <span className="text-yellow-500/70">
+          &ldquo;Unknown&rdquo; indicates unconfirmed allocation
+        </span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-yellow-500/70">BERA</span>
+          <span className="font-mono font-medium text-yellow-500">
             ${formatBera(beraPrice, 2)}
           </span>
         </div>
