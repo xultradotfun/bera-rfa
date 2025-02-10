@@ -46,10 +46,18 @@ function ProjectRow({ project, beraPrice }: ProjectRowProps) {
         </div>
       </td>
       <td className="py-4 px-4 text-right font-mono text-yellow-500">
-        {formatBera(project.beraAmount, 2)}
+        {project.beraAmount === 0 ? (
+          <span className="text-yellow-500/50">Unknown</span>
+        ) : (
+          formatBera(project.beraAmount, 2)
+        )}
       </td>
       <td className="py-4 px-4 text-right font-mono text-yellow-500">
-        ${formatBera(dollarValue, 2)}
+        {project.beraAmount === 0 ? (
+          <span className="text-yellow-500/50">Unknown</span>
+        ) : (
+          `$${formatBera(dollarValue, 2)}`
+        )}
       </td>
     </tr>
   );
@@ -84,7 +92,14 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     if (sortField === "projectName") {
       return multiplier * a.projectName.localeCompare(b.projectName);
     }
-    return multiplier * (a.beraAmount - b.beraAmount);
+    // Put unknown allocations (0) at the end when sorting by amount
+    if (sortField === "beraAmount") {
+      if (a.beraAmount === 0 && b.beraAmount === 0) return 0;
+      if (a.beraAmount === 0) return 1;
+      if (b.beraAmount === 0) return -1;
+      return multiplier * (a.beraAmount - b.beraAmount);
+    }
+    return 0;
   });
 
   const toggleSort = (field: SortField) => {
@@ -98,9 +113,14 @@ export function ProjectTable({ projects }: ProjectTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="text-center text-yellow-500">
-        Current BERA Price:{" "}
-        <span className="font-mono">${formatBera(beraPrice, 2)}</span>
+      <div className="text-center space-y-2">
+        <div className="text-yellow-500">
+          Current BERA Price:{" "}
+          <span className="font-mono">${formatBera(beraPrice, 2)}</span>
+        </div>
+        <div className="text-yellow-500/70 text-sm">
+          Note: "Unknown" means the allocation amount is not yet confirmed
+        </div>
       </div>
       <div className="overflow-x-auto rounded-lg border border-yellow-900/20 bg-yellow-950/10">
         <table className="w-full">
