@@ -1,8 +1,8 @@
-import { ProjectList } from "@/components/ProjectList";
 import { parse } from "csv-parse/sync";
 import path from "path";
 import { promises as fs } from "fs";
 import { Project, CsvRecord } from "@/types";
+import { ProjectTable } from "@/components/ProjectTable";
 
 async function getProjects(): Promise<Project[]> {
   const csvPath = path.join(
@@ -32,8 +32,8 @@ export default async function Home() {
   const projects = await getProjects();
 
   return (
-    <main className="min-h-screen bg-yellow-950/5">
-      <div className="container mx-auto px-4 py-8">
+    <main className="min-h-screen bg-yellow-950/5 py-8">
+      <div className="container mx-auto px-4">
         <div className="mb-8 text-center">
           <h1 className="mb-2 text-4xl font-bold text-yellow-500">
             Berachain RFA Allocations
@@ -43,7 +43,7 @@ export default async function Home() {
             Request for Allocation program
           </p>
         </div>
-        <ProjectList projects={projects} />
+        <ProjectTable projects={projects} />
       </div>
     </main>
   );
