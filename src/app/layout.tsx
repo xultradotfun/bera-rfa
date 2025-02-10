@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Berachain RFA Allocations",
   description:
-    "Explore projects that received BERA token allocations through the Request for Allocation program",
+    "Explore projects that received BERA token allocations through the RFA program",
 };
 
 export default function RootLayout({

@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Berachain RFA Allocations Explorer
 
-## Getting Started
+A web application to explore and track BERA token allocations through the Request for Allocation (RFA) program. View it live at [bera-rfa.vercel.app](https://bera-rfa.vercel.app).
 
-First, run the development server:
+## Features
+
+- 📊 Real-time tracking of BERA token allocations
+- 💰 Live BERA price updates from DEXScreener
+- 🔍 Search functionality for projects
+- 🔄 Sorting by project name or allocation amount
+- 🖼️ Twitter profile integration
+- 📱 Responsive design for all devices
+
+## Development
+
+This is a Next.js project bootstrapped with `create-next-app`.
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Getting Started
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/xultradotfun/bera-rfa.git
+cd bera-rfa
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Adding or Updating Project Data
 
-## Learn More
+The project data is stored in `/public/data/rfa_allocations.csv`. To add or update project information:
 
-To learn more about Next.js, take a look at the following resources:
+1. Fork the repository
+2. Edit `rfa_allocations.csv` following this format:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```csv
+project_name,bera_amount
+@project_twitter_handle,allocation_amount
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Requirements:
 
-## Deploy on Vercel
+- `project_name`: Must include the @ symbol (e.g., @project_name)
+- `bera_amount`: Numeric value (use 0 for unconfirmed allocations)
+- Keep the CSV header row intact
+- Maintain alphabetical order for easier review
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Create a pull request with your changes
+4. Include sources or verification for the allocation data in your PR description
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Example entry:
+
+```csv
+@example_project,150000.00
+```
+
+### Code Contributions
+
+1. Fork the repository
+2. Create a feature branch:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+3. Commit your changes:
+
+```bash
+git commit -m "Add: brief description of your changes"
+```
+
+4. Push to your fork:
+
+```bash
+git push origin feature/your-feature-name
+```
+
+5. Open a pull request
+
+### Development Guidelines
+
+- Follow the existing code style
+- Write meaningful commit messages
+- Update documentation as needed
+- Add comments for complex logic
+- Test your changes thoroughly
+
+## License
+
+MIT License - feel free to use this project as you wish.
+
+## Acknowledgments
+
+- Data curated by [@0x_ultra](https://twitter.com/0x_ultra)
+- Built with Next.js, Tailwind CSS, and TypeScript
+- Deployed on Vercel
