@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Project } from "@/types";
 import { formatBera, getBeraPrice } from "@/lib/utils";
 import Image from "next/image";
 import { useTwitterProfile } from "@/hooks/useTwitterProfile";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Search } from "lucide-react";
 
 interface ProjectRowProps {
   project: Project;
   beraPrice: number;
-  rank: number;
+  overallRank: number;
 }
 
-function ProjectRow({ project, beraPrice, rank }: ProjectRowProps) {
+function ProjectRow({ project, beraPrice, overallRank }: ProjectRowProps) {
   const { profileUrl } = useTwitterProfile(project.twitterHandle);
   const dollarValue = project.beraAmount * beraPrice;
-  const displayRank = project.beraAmount === 0 ? "-" : rank;
+  const displayRank = project.beraAmount === 0 ? "-" : overallRank;
 
   return (
     <tr className="border-b border-yellow-900/20 hover:bg-yellow-950/20 transition-colors">
@@ -79,6 +79,21 @@ export function ProjectTable({ projects }: ProjectTableProps) {
   const [sortField, setSortField] = useState<SortField>("beraAmount");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [beraPrice, setBeraPrice] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Calculate overall rankings once based on BERA amount
+  const projectRankings = useMemo(() => {
+    const rankMap = new Map<string, number>();
+
+    [...projects]
+      .filter((p) => p.beraAmount > 0)
+      .sort((a, b) => b.beraAmount - a.beraAmount)
+      .forEach((project, index) => {
+        rankMap.set(project.projectName, index + 1);
+      });
+
+    return rankMap;
+  }, [projects]);
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -92,7 +107,11 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     return () => clearInterval(interval);
   }, []);
 
-  const sortedProjects = [...projects].sort((a, b) => {
+  const filteredProjects = projects.filter((project) =>
+    project.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     const multiplier = sortDirection === "asc" ? 1 : -1;
     if (sortField === "projectName") {
       return multiplier * a.projectName.localeCompare(b.projectName);
@@ -128,6 +147,18 @@ export function ProjectTable({ projects }: ProjectTableProps) {
           confirmed
         </div>
       </div>
+      <div className="relative">
+        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <Search className="h-5 w-5 text-yellow-500/50" />
+        </div>
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 bg-yellow-950/10 border border-yellow-900/20 rounded-lg text-yellow-500 placeholder-yellow-500/50 focus:outline-none focus:ring-2 focus:ring-yellow-500/20"
+        />
+      </div>
       <div className="overflow-x-auto rounded-lg border border-yellow-900/20 bg-yellow-950/10">
         <table className="w-full">
           <thead>
@@ -156,16 +187,21 @@ export function ProjectTable({ projects }: ProjectTableProps) {
             </tr>
           </thead>
           <tbody>
-            {sortedProjects.map((project, index) => (
+            {sortedProjects.map((project) => (
               <ProjectRow
                 key={project.projectName}
                 project={project}
                 beraPrice={beraPrice}
-                rank={index + 1}
+                overallRank={projectRankings.get(project.projectName) || 0}
               />
             ))}
           </tbody>
         </table>
+        {sortedProjects.length === 0 && (
+          <div className="text-center py-8 text-yellow-500/70">
+            No projects found matching &ldquo;{searchQuery}&rdquo;
+          </div>
+        )}
       </div>
     </div>
   );
