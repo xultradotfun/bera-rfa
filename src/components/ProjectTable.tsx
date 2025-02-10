@@ -88,12 +88,19 @@ export function ProjectTable({ projects }: ProjectTableProps) {
   // Calculate overall rankings once based on BERA amount
   const projectRankings = useMemo(() => {
     const rankMap = new Map<string, number>();
+    let currentRank = 1;
+    let previousAmount = -1;
 
     [...projects]
       .filter((p) => p.beraAmount > 0)
       .sort((a, b) => b.beraAmount - a.beraAmount)
-      .forEach((project, index) => {
-        rankMap.set(project.projectName, index + 1);
+      .forEach((project) => {
+        // If amount is different from previous, increment rank
+        if (project.beraAmount !== previousAmount) {
+          currentRank = rankMap.size === 0 ? 1 : currentRank + 1;
+        }
+        rankMap.set(project.projectName, currentRank);
+        previousAmount = project.beraAmount;
       });
 
     return rankMap;
