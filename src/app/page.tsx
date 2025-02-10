@@ -41,18 +41,16 @@ async function getProjects(): Promise<Project[]> {
     }
 
     return records
+      .filter((record) => {
+        const amount = parseFloat(record.bera_amount);
+        return !isNaN(amount) && amount > 0;
+      })
       .map((record) => ({
         projectName: record.project_name,
-        beraAmount: parseFloat(record.bera_amount) || 0,
+        beraAmount: parseFloat(record.bera_amount),
         twitterHandle: record.project_name.replace("@", ""),
       }))
-      .sort((a: Project, b: Project) => {
-        // Put unknown allocations (0) at the end
-        if (a.beraAmount === 0 && b.beraAmount === 0) return 0;
-        if (a.beraAmount === 0) return 1;
-        if (b.beraAmount === 0) return -1;
-        return b.beraAmount - a.beraAmount;
-      });
+      .sort((a: Project, b: Project) => b.beraAmount - a.beraAmount);
   } catch (error) {
     console.error("Error loading projects:", error);
     return [];

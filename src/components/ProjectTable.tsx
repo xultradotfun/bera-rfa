@@ -10,16 +10,27 @@ import { ArrowUpDown } from "lucide-react";
 interface ProjectRowProps {
   project: Project;
   beraPrice: number;
+  rank: number;
+  totalProjects: number;
 }
 
-function ProjectRow({ project, beraPrice }: ProjectRowProps) {
+function ProjectRow({
+  project,
+  beraPrice,
+  rank,
+  totalProjects,
+}: ProjectRowProps) {
   const { profileUrl } = useTwitterProfile(project.twitterHandle);
   const dollarValue = project.beraAmount * beraPrice;
+  const displayRank = project.beraAmount === 0 ? "-" : rank;
 
   return (
     <tr className="border-b border-yellow-900/20 hover:bg-yellow-950/20 transition-colors">
       <td className="py-4 px-4">
         <div className="flex items-center gap-3">
+          <div className="w-8 text-right font-mono text-yellow-500/70">
+            {displayRank}
+          </div>
           <div className="relative h-8 w-8 overflow-hidden rounded-full bg-yellow-900/20">
             {profileUrl ? (
               <Image
@@ -102,6 +113,11 @@ export function ProjectTable({ projects }: ProjectTableProps) {
     return 0;
   });
 
+  // Calculate the number of projects with known allocations for ranking
+  const knownAllocationProjects = projects.filter(
+    (p) => p.beraAmount > 0
+  ).length;
+
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -129,7 +145,7 @@ export function ProjectTable({ projects }: ProjectTableProps) {
               <th className="py-3 px-4 text-left">
                 <button
                   onClick={() => toggleSort("projectName")}
-                  className="flex items-center gap-2 hover:text-yellow-400 text-yellow-500"
+                  className="flex items-center gap-2 hover:text-yellow-400 text-yellow-500 ml-11"
                 >
                   Project
                   <ArrowUpDown className="h-4 w-4" />
@@ -150,11 +166,13 @@ export function ProjectTable({ projects }: ProjectTableProps) {
             </tr>
           </thead>
           <tbody>
-            {sortedProjects.map((project) => (
+            {sortedProjects.map((project, index) => (
               <ProjectRow
                 key={project.projectName}
                 project={project}
                 beraPrice={beraPrice}
+                rank={index + 1}
+                totalProjects={knownAllocationProjects}
               />
             ))}
           </tbody>
