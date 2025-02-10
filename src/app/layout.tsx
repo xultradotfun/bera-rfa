@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "Explore projects that received BERA token allocations through the RFA program",
   icons: {
-    icon: "/favicon.ico",
+    icon: [{ url: "/favicon.ico", sizes: "any" }],
   },
 };
 
