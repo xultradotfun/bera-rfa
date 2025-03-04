@@ -26,7 +26,8 @@ export default function RootLayout({
         <script
           defer
           data-domain="rfa.xultra.fun"
-          src="https://plausible.io/js/script.hash.outbound-links.js"
+          data-api="/api/event"
+          src="/api/script"
         ></script>
         <script
           dangerouslySetInnerHTML={{
