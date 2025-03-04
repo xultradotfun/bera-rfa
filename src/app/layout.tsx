@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClientLayout } from "@/components/ClientLayout";
-import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,10 +23,19 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
+        <script
+          defer
+          data-domain="rfa.xultra.fun"
+          src="https://plausible.io/js/script.hash.outbound-links.js"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        ></script>
       </head>
       <body className={inter.className}>
         <ClientLayout>{children}</ClientLayout>
-        <Analytics />
       </body>
     </html>
   );
