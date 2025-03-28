@@ -16,7 +16,6 @@ import {
 } from "@/lib/utils";
 import { BGT_TOKENS } from "@/config/tokens";
 import { Globe } from "lucide-react";
-import Image from "next/image";
 
 interface HistoricalPrices {
   bera: HistoricalPrice[];
@@ -135,12 +134,10 @@ export function BGTAnalytics({
             return (
               <div key={`item-${index}`} className="flex items-center gap-2">
                 {wrapper?.metadata?.logoURI && (
-                  <Image
+                  <img
                     src={wrapper.metadata.logoURI}
                     alt={`${wrapper.name} logo`}
-                    width={16}
-                    height={16}
-                    className="rounded-full"
+                    className="w-4 h-4 rounded-full"
                   />
                 )}
                 <span style={{ color: entry.color }} className="text-sm">
@@ -231,12 +228,10 @@ export function BGTAnalytics({
           return (
             <div key={`item-${index}`} className="flex items-center gap-2">
               {wrapper?.metadata?.logoURI && (
-                <Image
+                <img
                   src={wrapper.metadata.logoURI}
                   alt={`${wrapper.name} logo`}
-                  width={16}
-                  height={16}
-                  className="rounded-full"
+                  className="w-4 h-4 rounded-full"
                 />
               )}
               <span style={{ color: entry.color }}>{entry.value}</span>
@@ -257,12 +252,10 @@ export function BGTAnalytics({
           >
             <div className="flex items-start gap-3">
               {wrapper.metadata?.logoURI && (
-                <Image
+                <img
                   src={wrapper.metadata.logoURI}
                   alt={`${wrapper.name} logo`}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
+                  className="w-10 h-10 rounded-full"
                 />
               )}
               <div className="flex-1 min-w-0">
