@@ -15,7 +15,7 @@ import {
   type BGTWrapperMetadata,
 } from "@/lib/utils";
 import { BGT_TOKENS } from "@/config/tokens";
-import { Globe } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface HistoricalPrices {
   bera: HistoricalPrice[];
@@ -246,60 +246,47 @@ export function BGTAnalytics({
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {wrappers.map((wrapper) => (
-          <div
+          <Card
             key={wrapper.name}
-            className="p-4 rounded-lg border border-yellow-900/20 bg-yellow-950/10"
+            className="bg-yellow-950/10 border-yellow-900/20"
           >
-            <div className="flex items-start gap-3">
-              {wrapper.metadata?.logoURI && (
-                <img
-                  src={wrapper.metadata.logoURI}
-                  alt={`${wrapper.name} logo`}
-                  className="w-10 h-10 rounded-full"
-                />
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-medium text-yellow-500 truncate">
-                    {wrapper.metadata?.name || wrapper.name}
-                  </h3>
-                  {wrapper.metadata?.websiteUrl && (
-                    <a
-                      href={wrapper.metadata.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-yellow-500/70 hover:text-yellow-500 transition-colors"
-                    >
-                      <Globe className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-                <p className="text-sm text-yellow-500/70 font-mono">
-                  ${wrapper.latestPrice.toFixed(2)}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-yellow-500/50">Premium:</span>
-                  <span
-                    className={`text-xs font-medium ${
-                      wrapper.premium > 0
-                        ? "text-green-500"
-                        : wrapper.premium < 0
-                        ? "text-red-500"
-                        : "text-yellow-500/50"
-                    }`}
-                  >
-                    {wrapper.premium > 0 ? "+" : ""}
-                    {wrapper.premium.toFixed(2)}%
-                  </span>
-                </div>
-                {wrapper.metadata?.description && (
-                  <p className="text-xs text-yellow-500/50 mt-2 line-clamp-2">
-                    {wrapper.metadata.description}
-                  </p>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-yellow-500/70">
+                {wrapper.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-start gap-3">
+                {wrapper.metadata?.logoURI && (
+                  <img
+                    src={wrapper.metadata.logoURI}
+                    alt={`${wrapper.name} logo`}
+                    className="w-10 h-10 rounded-full"
+                  />
                 )}
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold text-yellow-500">
+                    ${wrapper.latestPrice.toFixed(2)}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-yellow-500/50">Premium:</span>
+                    <span
+                      className={`text-sm font-medium ${
+                        wrapper.premium > 0
+                          ? "text-green-500"
+                          : wrapper.premium < 0
+                          ? "text-red-500"
+                          : "text-yellow-500/50"
+                      }`}
+                    >
+                      {wrapper.premium > 0 ? "+" : ""}
+                      {wrapper.premium.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 

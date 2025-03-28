@@ -2,19 +2,77 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 39 25% 8%;
-  --foreground: 39 25% 98%;
-  --primary: 39 95% 50%;
-  --primary-foreground: 39 25% 8%;
-  --muted: 39 25% 16%;
-  --muted-foreground: 39 25% 60%;
+@layer base {
+  :root {
+    --background: 39 25% 8%;
+    --foreground: 39 25% 98%;
+
+    --card: 39 25% 12%;
+    --card-foreground: 39 25% 98%;
+
+    --popover: 39 25% 12%;
+    --popover-foreground: 39 25% 98%;
+
+    --primary: 39 95% 50%;
+    --primary-foreground: 39 25% 8%;
+
+    --secondary: 39 25% 16%;
+    --secondary-foreground: 39 25% 98%;
+
+    --muted: 39 25% 16%;
+    --muted-foreground: 39 25% 60%;
+
+    --accent: 39 25% 16%;
+    --accent-foreground: 39 25% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 39 25% 20%;
+    --input: 39 25% 20%;
+    --ring: 39 95% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 45 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 45 100% 50%;
+  }
 }
 
-body {
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  font-feature-settings: "rlig" 1, "calt" 1;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* Custom scrollbar for Webkit browsers */
