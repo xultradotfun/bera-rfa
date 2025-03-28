@@ -81,6 +81,9 @@ export function BGTAnalytics({
   metadata: BGTWrapperMetadata | null;
 }) {
   const [timeRange, setTimeRange] = useState<TimeRange>("7d");
+  const [priceDenomination, setPriceDenomination] = useState<"USDC" | "BERA">(
+    "USDC"
+  );
 
   const wrappers = useMemo(() => {
     const calculatePremium = (price: number) =>
@@ -122,35 +125,6 @@ export function BGTAnalytics({
     ] as WrapperInfo[];
   }, [prices, historicalPrices, metadata]);
 
-  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
-    if (!active || !payload) return null;
-
-    return (
-      <div className="p-3 rounded-lg border border-yellow-900/20 bg-yellow-950/95 backdrop-blur-sm">
-        <div className="text-sm text-yellow-500/70 mb-2">{label}</div>
-        <div className="space-y-1">
-          {payload.map((entry, index) => {
-            const wrapper = wrappers.find((w) => w.name === entry.name);
-            return (
-              <div key={`item-${index}`} className="flex items-center gap-2">
-                {wrapper?.metadata?.logoURI && (
-                  <img
-                    src={wrapper.metadata.logoURI}
-                    alt={`${wrapper.name} logo`}
-                    className="w-4 h-4 rounded-full"
-                  />
-                )}
-                <span style={{ color: entry.color }} className="text-sm">
-                  {entry.name}: ${entry.value.toFixed(2)}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   const chartData = useMemo(() => {
     // Get all unique timestamps
     const timestamps = new Set<string>();
@@ -191,6 +165,11 @@ export function BGTAnalytics({
         stbgt: 0,
       };
 
+      // Find BERA price at this timestamp
+      const beraPrice = historicalPrices.bera.find(
+        (p) => p.timestamp === timestamp
+      )?.price;
+
       // Find prices for each token at this timestamp
       wrappers.forEach((wrapper) => {
         const price = wrapper.historicalPrices.find(
@@ -199,16 +178,31 @@ export function BGTAnalytics({
         if (price) {
           switch (wrapper.name) {
             case "BGT (1:1 BERA)":
-              dataPoint.bera = price.price;
+              dataPoint.bera = priceDenomination === "USDC" ? price.price : 1; // BGT is always 1 BERA
               break;
             case BGT_TOKENS.ibgt.name:
-              dataPoint.ibgt = price.price;
+              dataPoint.ibgt =
+                priceDenomination === "USDC"
+                  ? price.price
+                  : beraPrice
+                  ? price.price / beraPrice
+                  : 0;
               break;
             case BGT_TOKENS.lbgt.name:
-              dataPoint.lbgt = price.price;
+              dataPoint.lbgt =
+                priceDenomination === "USDC"
+                  ? price.price
+                  : beraPrice
+                  ? price.price / beraPrice
+                  : 0;
               break;
             case BGT_TOKENS.stbgt.name:
-              dataPoint.stbgt = price.price;
+              dataPoint.stbgt =
+                priceDenomination === "USDC"
+                  ? price.price
+                  : beraPrice
+                  ? price.price / beraPrice
+                  : 0;
               break;
           }
         }
@@ -216,7 +210,36 @@ export function BGTAnalytics({
 
       return dataPoint;
     });
-  }, [wrappers, timeRange]);
+  }, [wrappers, timeRange, priceDenomination, historicalPrices.bera]);
+
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    if (!active || !payload) return null;
+
+    return (
+      <div className="p-3 rounded-lg border border-yellow-900/20 bg-yellow-950/95 backdrop-blur-sm">
+        <div className="text-sm text-yellow-500/70 mb-2">{label}</div>
+        <div className="space-y-1">
+          {payload.map((entry, index) => {
+            const wrapper = wrappers.find((w) => w.name === entry.name);
+            return (
+              <div key={`item-${index}`} className="flex items-center gap-2">
+                {wrapper?.metadata?.logoURI && (
+                  <img
+                    src={wrapper.metadata.logoURI}
+                    alt={`${wrapper.name} logo`}
+                    className="w-4 h-4 rounded-full"
+                  />
+                )}
+                <span style={{ color: entry.color }} className="text-sm">
+                  {entry.name}: ${entry.value.toFixed(2)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const CustomLegend = ({ payload }: LegendProps) => {
     if (!payload) return null;
@@ -290,108 +313,146 @@ export function BGTAnalytics({
         ))}
       </div>
 
-      <div className="p-4 rounded-lg border border-yellow-900/20 bg-yellow-950/10">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-yellow-500">Price History</h3>
+      <Card className="bg-yellow-950/10 border-yellow-900/20">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setTimeRange("7d")}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                timeRange === "7d"
-                  ? "bg-yellow-500 text-black"
-                  : "text-yellow-500/70 hover:text-yellow-500"
-              }`}
-            >
-              7D
-            </button>
-            <button
-              onClick={() => setTimeRange("30d")}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                timeRange === "30d"
-                  ? "bg-yellow-500 text-black"
-                  : "text-yellow-500/70 hover:text-yellow-500"
-              }`}
-            >
-              30D
-            </button>
+            <div className="h-1.5 w-1.5 rounded-full bg-yellow-500 animate-pulse" />
+            <CardTitle className="text-base font-medium text-yellow-500">
+              Price History
+            </CardTitle>
           </div>
-        </div>
-        <div className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="rgb(234, 179, 8, 0.1)"
-              />
-              <XAxis
-                dataKey="timestamp"
-                stroke="rgb(234, 179, 8, 0.5)"
-                tick={{ fill: "rgb(234, 179, 8, 0.7)" }}
-                interval="preserveStartEnd"
-                tickFormatter={(value) => {
-                  // Only show the date part (first part before the comma)
-                  return value.split(",")[0];
-                }}
-                minTickGap={50}
-              />
-              <YAxis
-                stroke="rgb(234, 179, 8, 0.5)"
-                tick={{ fill: "rgb(234, 179, 8, 0.7)" }}
-                label={{
-                  value: "Price ($)",
-                  angle: -90,
-                  position: "insideLeft",
-                  fill: "rgb(234, 179, 8, 0.7)",
-                }}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                contentStyle={{
-                  backgroundColor: "transparent",
-                  border: "none",
-                  boxShadow: "none",
-                }}
-              />
-              <Legend content={<CustomLegend />} />
-              <Line
-                type="monotone"
-                dataKey="bera"
-                stroke="rgb(234, 179, 8)"
-                name="BGT"
-                dot={false}
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="ibgt"
-                stroke="#ff6b35"
-                name="iBGT"
-                dot={false}
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="lbgt"
-                stroke="#60a5fa"
-                name="LBGT"
-                dot={false}
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="stbgt"
-                stroke="#e879f9"
-                name="stBGT"
-                dot={false}
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+          <div className="flex items-center gap-1.5">
+            <div className="flex items-center bg-yellow-950/20 rounded-lg p-1">
+              <button
+                onClick={() => setPriceDenomination("USDC")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  priceDenomination === "USDC"
+                    ? "bg-yellow-500 text-black"
+                    : "text-yellow-500/70 hover:text-yellow-500"
+                }`}
+              >
+                USD
+              </button>
+              <button
+                onClick={() => setPriceDenomination("BERA")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  priceDenomination === "BERA"
+                    ? "bg-yellow-500 text-black"
+                    : "text-yellow-500/70 hover:text-yellow-500"
+                }`}
+              >
+                BERA
+              </button>
+            </div>
+            <div className="flex items-center bg-yellow-950/20 rounded-lg p-1">
+              <button
+                onClick={() => setTimeRange("7d")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  timeRange === "7d"
+                    ? "bg-yellow-500 text-black"
+                    : "text-yellow-500/70 hover:text-yellow-500"
+                }`}
+              >
+                7D
+              </button>
+              <button
+                onClick={() => setTimeRange("30d")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  timeRange === "30d"
+                    ? "bg-yellow-500 text-black"
+                    : "text-yellow-500/70 hover:text-yellow-500"
+                }`}
+              >
+                30D
+              </button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[350px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgb(234, 179, 8, 0.1)"
+                />
+                <XAxis
+                  dataKey="timestamp"
+                  stroke="rgb(234, 179, 8, 0.5)"
+                  tick={{ fill: "rgb(234, 179, 8, 0.7)" }}
+                  interval="preserveStartEnd"
+                  tickFormatter={(value) => {
+                    return value.split(",")[0];
+                  }}
+                  minTickGap={50}
+                />
+                <YAxis
+                  stroke="rgb(234, 179, 8, 0.5)"
+                  tick={{ fill: "rgb(234, 179, 8, 0.7)" }}
+                  label={{
+                    value:
+                      priceDenomination === "USDC"
+                        ? "Price ($)"
+                        : "Price (BERA)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "rgb(234, 179, 8, 0.7)",
+                  }}
+                />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  contentStyle={{
+                    backgroundColor: "rgb(39, 25, 8, 0.95)",
+                    border: "1px solid rgb(234, 179, 8, 0.2)",
+                    borderRadius: "0.5rem",
+                    boxShadow: "none",
+                  }}
+                />
+                <Legend content={<CustomLegend />} />
+                <Line
+                  type="monotone"
+                  dataKey="bera"
+                  stroke="rgb(234, 179, 8)"
+                  name="BGT"
+                  dot={false}
+                  strokeWidth={2}
+                  activeDot={{ r: 4, fill: "rgb(234, 179, 8)" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="ibgt"
+                  stroke="#ff6b35"
+                  name="iBGT"
+                  dot={false}
+                  strokeWidth={2}
+                  activeDot={{ r: 4, fill: "#ff6b35" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="lbgt"
+                  stroke="#60a5fa"
+                  name="LBGT"
+                  dot={false}
+                  strokeWidth={2}
+                  activeDot={{ r: 4, fill: "#60a5fa" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="stbgt"
+                  stroke="#e879f9"
+                  name="stBGT"
+                  dot={false}
+                  strokeWidth={2}
+                  activeDot={{ r: 4, fill: "#e879f9" }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
