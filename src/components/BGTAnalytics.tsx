@@ -227,7 +227,7 @@ export function BGTAnalytics({
     if (!active || !payload) return null;
 
     return (
-      <div className="p-3 rounded-lg border border-yellow-900/20 bg-yellow-950/95 backdrop-blur-sm">
+      <div className="p-3 rounded-lg border border-yellow-900/20 bg-yellow-950/10 backdrop-blur-sm">
         <div className="text-sm text-yellow-500/70 mb-2">{label}</div>
         <div className="space-y-1">
           {payload.map((entry, index) => {
@@ -242,7 +242,9 @@ export function BGTAnalytics({
                   />
                 )}
                 <span style={{ color: entry.color }} className="text-sm">
-                  {entry.name}: ${entry.value.toFixed(2)}
+                  {entry.name}: {priceDenomination === "USDC" ? "$" : ""}
+                  {entry.value.toFixed(2)}
+                  {priceDenomination === "BERA" && " BERA"}
                 </span>
               </div>
             );
@@ -446,8 +448,8 @@ export function BGTAnalytics({
                 <Tooltip
                   content={<CustomTooltip />}
                   contentStyle={{
-                    backgroundColor: "rgb(39, 25, 8, 0.95)",
-                    border: "1px solid rgb(234, 179, 8, 0.2)",
+                    backgroundColor: "transparent",
+                    border: "none",
                     borderRadius: "0.5rem",
                     boxShadow: "none",
                   }}
