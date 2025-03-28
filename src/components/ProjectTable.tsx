@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Project } from "@/types";
-import { formatBera, getBeraPrice } from "@/lib/utils";
+import { formatBera, getBGTWrapperPrices } from "@/lib/utils";
 import Image from "next/image";
 import { useTwitterProfile } from "@/hooks/useTwitterProfile";
 import { ArrowUpDown, Search } from "lucide-react";
@@ -108,13 +108,12 @@ export function ProjectTable({ projects }: ProjectTableProps) {
 
   useEffect(() => {
     const fetchPrice = async () => {
-      const price = await getBeraPrice();
-      setBeraPrice(price);
+      const { prices } = await getBGTWrapperPrices();
+      setBeraPrice(prices.bera);
     };
 
     fetchPrice();
-    // Refresh price every minute
-    const interval = setInterval(fetchPrice, 60000);
+    const interval = setInterval(fetchPrice, 60000); // Update every minute
     return () => clearInterval(interval);
   }, []);
 

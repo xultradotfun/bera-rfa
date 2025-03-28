@@ -5,7 +5,7 @@ import { ProjectTable } from "@/components/ProjectTable";
 import { Analytics } from "@/components/Analytics";
 import { SectionSelector } from "@/components/SectionSelector";
 import { useState, useEffect } from "react";
-import { getBeraPrice } from "@/lib/utils";
+import { getBGTWrapperPrices } from "@/lib/utils";
 
 async function fetchProjects(): Promise<Project[]> {
   const response = await fetch("/api/projects");
@@ -25,17 +25,17 @@ export default function Home() {
   const [beraPrice, setBeraPrice] = useState(0);
 
   useEffect(() => {
-    Promise.all([fetchProjects(), getBeraPrice()])
-      .then(([projectsData, price]) => {
+    Promise.all([fetchProjects(), getBGTWrapperPrices()])
+      .then(([projectsData, prices]) => {
         setProjects(projectsData);
-        setBeraPrice(price);
+        setBeraPrice(prices.prices.bera);
       })
       .finally(() => setIsLoading(false));
 
     // Refresh price every minute
     const interval = setInterval(async () => {
-      const price = await getBeraPrice();
-      setBeraPrice(price);
+      const prices = await getBGTWrapperPrices();
+      setBeraPrice(prices.prices.bera);
     }, 60000);
 
     return () => clearInterval(interval);

@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClientLayout } from "@/components/ClientLayout";
 import "./globals.css";
+import { Navbar } from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Berachain RFA Allocations",
-  description:
-    "Explore projects that received BERA token allocations through the RFA program",
-  icons: {
-    icon: "/favicon.png",
-  },
+  title: "Bera RFB",
+  description: "Bera RFB Analytics",
 };
 
 export default function RootLayout({
@@ -21,22 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <script
-          defer
-          data-domain="rfa.xultra.fun"
-          data-api="/api/event"
-          src="/api/script"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
-          }}
-        ></script>
-      </head>
       <body className={inter.className}>
-        <ClientLayout>{children}</ClientLayout>
+        <Navbar />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {children}
+        </main>
       </body>
     </html>
   );
