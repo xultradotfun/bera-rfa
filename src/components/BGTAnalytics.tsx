@@ -14,8 +14,14 @@ import {
   type HistoricalPrice,
   type BGTWrapperMetadata,
 } from "@/lib/utils";
-import { BGT_TOKENS } from "@/config/tokens";
+import { BGT_TOKENS, BERA_TOKEN } from "@/config/tokens";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  ExternalLink,
+  ArrowUpRight,
+  ArrowDownRight,
+  Minus,
+} from "lucide-react";
 
 interface HistoricalPrices {
   bera: HistoricalPrice[];
@@ -36,8 +42,9 @@ interface WrapperInfo {
     description: string;
     name: string;
     symbol: string;
-    websiteUrl: string;
+    websiteUrl?: string;
   };
+  websiteUrl?: string;
 }
 
 interface ChartDataPoint {
@@ -97,6 +104,7 @@ export function BGTAnalytics({
         premium: 0,
         historicalPrices: historicalPrices.bera,
         metadata: metadata?.bera,
+        websiteUrl: BERA_TOKEN.websiteUrl,
       },
       {
         name: BGT_TOKENS.ibgt.name,
@@ -105,6 +113,7 @@ export function BGTAnalytics({
         premium: calculatePremium(prices.ibgt),
         historicalPrices: historicalPrices.ibgt,
         metadata: metadata?.ibgt,
+        websiteUrl: BGT_TOKENS.ibgt.websiteUrl,
       },
       {
         name: BGT_TOKENS.lbgt.name,
@@ -113,6 +122,7 @@ export function BGTAnalytics({
         premium: calculatePremium(prices.lbgt),
         historicalPrices: historicalPrices.lbgt,
         metadata: metadata?.lbgt,
+        websiteUrl: BGT_TOKENS.lbgt.websiteUrl,
       },
       {
         name: BGT_TOKENS.stbgt.name,
@@ -121,6 +131,7 @@ export function BGTAnalytics({
         premium: calculatePremium(prices.stbgt),
         historicalPrices: historicalPrices.stbgt,
         metadata: metadata?.stbgt,
+        websiteUrl: BGT_TOKENS.stbgt.websiteUrl,
       },
     ] as WrapperInfo[];
   }, [prices, historicalPrices, metadata]);
@@ -271,34 +282,56 @@ export function BGTAnalytics({
         {wrappers.map((wrapper) => (
           <Card
             key={wrapper.name}
-            className="bg-yellow-950/10 border-yellow-900/20"
+            className="group relative bg-yellow-950/10 border-yellow-900/20 hover:border-yellow-500/30 transition-all duration-200"
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-yellow-500/70">
-                {wrapper.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-start gap-3">
+              <div className="flex items-center gap-2">
                 {wrapper.metadata?.logoURI && (
                   <img
                     src={wrapper.metadata.logoURI}
                     alt={`${wrapper.name} logo`}
-                    className="w-10 h-10 rounded-full"
+                    className="w-6 h-6 rounded-full ring-1 ring-yellow-900/20 group-hover:ring-yellow-500/30 transition-all"
                   />
                 )}
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold text-yellow-500">
+                <CardTitle className="text-sm font-medium text-yellow-500/90 group-hover:text-yellow-500 transition-colors">
+                  {wrapper.name}
+                </CardTitle>
+              </div>
+              {(wrapper.metadata?.websiteUrl || wrapper.websiteUrl) && (
+                <a
+                  href={wrapper.metadata?.websiteUrl || wrapper.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-yellow-500/40 hover:text-yellow-500 transition-colors p-1 hover:bg-yellow-500/10 rounded-full"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl font-bold text-white">
                     ${wrapper.latestPrice.toFixed(2)}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-yellow-500/50">Premium:</span>
+                  </span>
+                  <span className="text-xs text-yellow-500/50">USD</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-yellow-500/50">Premium</span>
+                  <div className="flex items-center gap-1">
+                    {wrapper.premium > 0 ? (
+                      <ArrowUpRight className="w-3.5 h-3.5 text-green-400" />
+                    ) : wrapper.premium < 0 ? (
+                      <ArrowDownRight className="w-3.5 h-3.5 text-red-400" />
+                    ) : (
+                      <Minus className="w-3.5 h-3.5 text-yellow-500/50" />
+                    )}
                     <span
                       className={`text-sm font-medium ${
                         wrapper.premium > 0
-                          ? "text-green-500"
+                          ? "text-green-400"
                           : wrapper.premium < 0
-                          ? "text-red-500"
+                          ? "text-red-400"
                           : "text-yellow-500/50"
                       }`}
                     >
@@ -307,6 +340,14 @@ export function BGTAnalytics({
                     </span>
                   </div>
                 </div>
+                {wrapper.metadata?.description && (
+                  <div className="relative group/desc">
+                    <p className="text-xs text-yellow-500/60 line-clamp-2 leading-relaxed">
+                      {wrapper.metadata.description}
+                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-yellow-950/95 to-transparent opacity-0 group-hover/desc:opacity-100 transition-opacity duration-200" />
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
